@@ -32,7 +32,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .seg button{flex:1;border:0;background:transparent;padding:7px 10px;border-radius:999px;font-size:13px;font-variant-numeric:tabular-nums;color:var(--sub);white-space:nowrap}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--body)}
 .finder{position:relative;background:var(--leather);padding:8px;border-radius:7px}
-.finder canvas{display:block;width:100%;aspect-ratio:3/2;touch-action:none;border-radius:2px;background:#000}
+.finder canvas{display:block;width:100%;touch-action:none;border-radius:2px;background:#000}
 .flash{position:absolute;inset:8px;background:#fff;opacity:0;pointer-events:none;border-radius:2px}
 .flash.on{animation:fl .45s ease-out}
 @keyframes fl{0%{opacity:.9}100%{opacity:0}}
@@ -69,7 +69,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .res{max-width:520px;margin:0 auto}
 .res h2{font-family:"Zen Old Mincho",serif;font-size:15px;font-weight:400;color:var(--sub);margin:0 0 14px;letter-spacing:.2em}
 .print{background:#F7F5EF;padding:12px 12px 16px;border-radius:2px;box-shadow:0 10px 30px rgba(0,0,0,.22);transform:rotate(-1deg);color:#1F2023}
-.print img{display:block;width:100%;aspect-ratio:3/2}
+.print img{display:block;width:100%;height:auto}
 .print .cap{display:flex;justify-content:space-between;align-items:baseline;margin-top:12px;font-family:"Zen Old Mincho",serif;gap:10px}
 .print .cap strong{font-size:20px}
 .print .cap span{font-size:28px;font-weight:700}
@@ -82,7 +82,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .stats b{display:block;font-size:21px;color:var(--ink);font-variant-numeric:tabular-nums;margin-top:2px}
 .sheet{display:grid;grid-template-columns:1fr 1fr;gap:12px;background:var(--leather);padding:12px;border-radius:4px}
 .sheet figure{margin:0;color:#DAD5CB;font-size:12px}
-.sheet img{display:block;width:100%;aspect-ratio:3/2;border-radius:1px}
+.sheet img{display:block;width:100%;height:auto;border-radius:1px}
 .sheet figcaption{margin-top:5px;line-height:1.5}
 .sheet figcaption div{display:flex;justify-content:space-between;gap:6px}
 .sheet figcaption .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:"Zen Old Mincho",serif;font-size:13px}
@@ -96,6 +96,29 @@ header{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .zk small{color:var(--sub);font-size:12px;line-height:1.5;display:block}
 .zk em{font-style:normal;float:right;color:var(--sub);font-size:12px}
 .center{text-align:center}
+.pt{font-variant-numeric:tabular-nums;font-weight:700}
+.shop h3{font-family:"Zen Old Mincho",serif;font-size:17px;margin:26px 0 10px;font-weight:700}
+.wallet{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:12px}
+.wallet b{font-size:28px;font-variant-numeric:tabular-nums}
+.item{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.item .ic{width:46px;height:46px;border-radius:8px;background:var(--plate);display:grid;place-items:center}
+.item .ic i{display:block;border:2px solid var(--ink);border-radius:2px}
+.item .sw{width:30px;height:30px;border-radius:4px}
+.item b{font-family:"Zen Old Mincho",serif;font-size:16px}
+.item small{display:block;color:var(--sub);font-size:12px;line-height:1.55;margin-top:2px}
+.item button{border:1px solid var(--ink);background:transparent;border-radius:999px;padding:7px 13px;font-size:13px;white-space:nowrap}
+.item button.buy{background:var(--ink);color:var(--body)}
+.item button:disabled{opacity:.35;cursor:default}
+.item button.using{border-color:transparent;color:var(--gold)}
+.camline{font-size:13px;color:var(--sub);margin-top:10px;line-height:1.7}
+.lensbtn{justify-self:start;border:1px solid var(--line);background:var(--plate);border-radius:10px;padding:6px 12px;text-align:left;line-height:1.3;max-width:100%}
+.lensbtn small{display:block;font-size:10px;color:var(--sub)}
+.lensbtn span{font-size:13px;font-weight:700;white-space:nowrap}
+.focal{justify-self:end;font-variant-numeric:tabular-nums;font-size:22px;font-weight:700}
+.focal small{font-size:12px;color:var(--sub);font-weight:400;margin-left:2px}
+.zoom{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--sub)}
+.zoom[hidden]{display:none}
+.zoom input{flex:1;accent-color:var(--accent);height:28px}
 @media (prefers-reduced-motion:reduce){.flash.on{animation:none}.print{transform:none}}
 </style>
 </head>
@@ -118,14 +141,11 @@ header{display:flex;justify-content:space-between;align-items:center;gap:8px}
     <div class="toast" id="toast"></div>
   </div>
   <div class="controls">
-    <div class="seg" role="group" aria-label="レンズ">
-      <button data-mm="24" aria-pressed="false">24</button>
-      <button data-mm="50" aria-pressed="true">50</button>
-      <button data-mm="85" aria-pressed="false">85mm</button>
-    </div>
+    <button class="lensbtn" id="lensBtn" aria-label="レンズを交換"><small>レンズ交換</small><span id="lensName">50mm F1.8</span></button>
     <button class="shutter" id="shutter" aria-label="シャッターを切る"></button>
-    <div></div>
+    <div class="focal" id="focal">50<small>mm</small></div>
   </div>
+  <div class="zoom" id="zoomRow" hidden><span id="zMin">24</span><input type="range" id="zoom" min="24" max="70" step="1" aria-label="ズーム"><span id="zMax">70</span></div>
   <div class="films" id="films" role="group" aria-label="フィルム"></div>
   <div class="mini"><canvas id="mini" aria-label="全景。タップでその場所へ"></canvas></div>
   <p class="memo" id="memo"></p>
@@ -138,22 +158,26 @@ header{display:flex;justify-content:space-between;align-items:center;gap:8px}
       <p>夕方から夜までの3分半、撮影地は3か所、フィルムは12枚。</p>
       <p>被写体の組み合わせで「役」がそろうと、写真に名前と得点がつく。一富士二鷹三茄子、だるま夕日、狐の嫁入り……</p>
       <p>光の時刻と、一瞬の奇跡を待て。</p>
+      <div class="camline" id="camline"></div>
       <button class="primary" id="startBtn">撮影をはじめる</button><br>
-      <button class="ghost" data-zukan>役図鑑を見る</button>
+      <button class="ghost" data-shop>カメラ店へ</button>
+      <button class="ghost" data-zukan>役図鑑</button>
       <div class="record" id="record"></div>
     </div>
   </div>
 </section>
 <section class="screen" id="resScreen"><div class="res" id="res"></div></section>
 <section class="screen" id="zkScreen"><div class="res" id="zk"></div></section>
+<section class="screen" id="shopScreen"><div class="res shop" id="shop"></div></section>
 
 <script>
 (()=>{
-const W=3000,H=1000,DUR=210,SHOTS=12;
+const W=3000,H=1000,DUR=210;let SHOTS=12;
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const cv=$('#view'),ctx=cv.getContext('2d');
 const mini=$('#mini'),mctx=mini.getContext('2d');
 const photo=document.createElement('canvas');photo.width=600;photo.height=400;const pctx=photo.getContext('2d');
+const fw=mm=>1200*Math.pow(24/mm,.8);
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
 const hex=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
 const mix=(a,b,k)=>a.map((v,i)=>v+(b[i]-v)*k);
@@ -472,7 +496,33 @@ const SIMS=[
  {id:'cla',n:'銀塩',f:[['saturate',.68],['sepia',.16],['contrast',1.1],['brightness',1.02]],sw:'#8E9A86',good:(t,tags)=>tags.has('人'),why:'人の気配'},
  {id:'mono',n:'墨',f:[['grayscale',1],['contrast',1.3]],sw:'#555555',good:t=>t>.66,why:'夜のシルエット'},
  {id:'fade',n:'褪色',f:[['sepia',.32],['saturate',.85],['contrast',.86],['brightness',1.08]],sw:'#D9B98C',good:t=>t<.42,why:'午後の柔らかさ'},
- {id:'cine',n:'薄暮',f:[['hue',-14],['saturate',.9],['contrast',1.15],['brightness',.96]],sw:'#3D6E8C',good:t=>t>.6&&t<.84,why:'青の時間'}];
+ {id:'cine',n:'薄暮',f:[['hue',-14],['saturate',.9],['contrast',1.15],['brightness',.96]],sw:'#3D6E8C',good:t=>t>.6&&t<.84,why:'青の時間'},
+ {id:'sakura',n:'桜',price:400,d:'淡い桃色。人を撮ると相性がいい。',f:[['hue',-12],['saturate',1.15],['brightness',1.06],['contrast',.95]],sw:'#E9A3B5',good:(t,g)=>g.has('恋人')||g.has('子ども'),why:'人の温もり'},
+ {id:'kohaku',n:'琥珀',price:500,d:'濃い飴色。灯りを撮ると映える。',f:[['sepia',.5],['saturate',1.25],['contrast',1.08]],sw:'#C98A2E',good:(t,g)=>g.has('灯籠')||g.has('民家')||g.has('灯台点灯')||(g.has('列車')&&t>.55),why:'灯りの色'},
+ {id:'karasuba',n:'烏羽',price:600,d:'硬い黒白。シルエットに強い。',f:[['grayscale',1],['contrast',1.7],['brightness',.95]],sw:'#1E1E1E',good:(t,g)=>g.has('カラス')||g.has('鷹')||(t>.55&&t<.75),why:'シルエットの硬さ'},
+ {id:'aojashin',n:'青写真',price:700,d:'一面の藍色。月と星に似合う。',f:[['grayscale',1],['sepia',1],['hue',175],['saturate',2.2],['contrast',1.1]],sw:'#2C6F99',good:(t,g)=>g.has('月')||g.has('流れ星'),why:'夜空の静けさ'},
+ {id:'cross',n:'クロス現像',price:800,d:'色がずれて派手になる。速いものと好相性。',f:[['hue',22],['saturate',1.5],['contrast',1.3]],sw:'#5BAF5A',good:(t,g)=>g.has('競走艇')||g.has('列車')||g.has('鯛'),why:'速さと勢い'},
+ {id:'neon',n:'ネオン',price:900,d:'紫がかった強い発色。夜ふけ向き。',f:[['saturate',1.7],['hue',-28],['contrast',1.2]],sw:'#8A4BD8',good:t=>t>.8,why:'夜の色彩'},
+ {id:'sekigai',n:'赤外',price:1000,d:'色が反転したような別世界。山や木が化ける。',f:[['hue',180],['saturate',1.3],['contrast',1.15]],sw:'#C2477F',good:(t,g)=>g.has('富士')||g.has('松')||g.has('柿'),why:'見慣れた景色の裏側'}];
+const CAMS=[
+ {id:'hajime',n:'ハジメ',kind:'入門機',price:0,shots:12,aspect:1.5,d:'3:2。クセのない一台。12枚撮り。'},
+ {id:'pop',n:'ポップ',kind:'トイカメラ',price:600,shots:15,aspect:1.5,look:'toy',d:'光漏れと濃い周辺減光。15枚撮り。人や動物を撮ると +5。'},
+ {id:'futatsu',n:'ふたつめ',kind:'二眼レフ',price:1200,shots:12,aspect:1,d:'正方形 1:1。真ん中に置いても構図が満点になる。'},
+ {id:'hayate',n:'ハヤテ',kind:'高速連写機',price:1600,shots:16,aspect:1.5,d:'16枚撮り。動く被写体の得点 +25%。'},
+ {id:'yokonaga',n:'ヨコナガ',kind:'パノラマ',price:2000,shots:10,aspect:2.6,d:'横長 2.6:1。被写体が多くても減点されにくい。10枚撮り。'},
+ {id:'ginrei',n:'ギンレイ',kind:'高画素機',price:3500,shots:18,aspect:1.5,look:'fine',res:1500,d:'高画素で粒子が細かい。18枚撮り。全写真の基本点 +5。'}];
+const LENSES=[
+ {id:'p50',n:'標準単焦点',short:'50mm F1.8',min:50,max:50,price:0,d:'最初の一本。単焦点はキレがよく +3。'},
+ {id:'p24',n:'広角単焦点',short:'24mm F2.8',min:24,max:24,price:500,d:'広く写す。逆さ富士も入る。単焦点 +3。'},
+ {id:'p85',n:'中望遠単焦点',short:'85mm F1.8',min:85,max:85,price:500,d:'主役を大きく。単焦点 +3。'},
+ {id:'z2470',n:'標準ズーム',short:'24-70mm',min:24,max:70,price:1500,d:'広角から標準まで自在に。'},
+ {id:'z70200',n:'望遠ズーム',short:'70-200mm',min:70,max:200,price:1800,d:'遠くの鷹や競走艇を大きく。'},
+ {id:'p200',n:'望遠単焦点',short:'200mm F2.8',min:200,max:200,price:1200,d:'ぐっと引き寄せる。単焦点 +3。'},
+ {id:'z24200',n:'高倍率ズーム',short:'24-200mm',min:24,max:200,price:3500,d:'これ一本で全部撮れる。'}];
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const owned=()=>{const o=store.get('zansho-own',{});o.cams=(o.cams||[]).filter(i=>CAMS.some(c=>c.id===i));if(!o.cams.includes('hajime'))o.cams.unshift('hajime');o.films=o.films||[];o.lenses=o.lenses||[];if(!o.lenses.includes('p50'))o.lenses.unshift('p50');return o};
+let lensId=store.get('zansho-lens','p50');if(!owned().lenses.includes(lensId))lensId='p50';const LENS=()=>LENSES.find(l=>l.id===lensId);let fmm=50;
+let camId=store.get('zansho-cam','hajime');if(!owned().cams.includes(camId))camId='hajime';const CAM=()=>CAMS.find(c=>c.id===camId);
 const cssOf=s=>s.f.map(([k,v])=>k==='hue'?`hue-rotate(${v}deg)`:`${k}(${v})`).join(' ')||'none';
 function matOf(k,v){
   if(k==='saturate'||k==='grayscale'){const s=k==='saturate'?v:1-v;return[.213+.787*s,.715-.715*s,.072-.072*s,.213-.213*s,.715+.285*s,.072-.072*s,.213-.213*s,.715-.715*s,.072+.928*s]}
@@ -489,8 +539,10 @@ function state(){const t=el/DUR,[sT,sB]=sky(t);return{t,sT,sB,dark:clamp((t-.3)/
 function renderView(c,cw,ch,showGrid,s){
   const sc=cw/camW,cam=cams[locId];c.setTransform(sc,0,0,sc,-cam.x*sc,-cam.y*sc);DRAW[locId](c,s);c.setTransform(1,0,0,1,0,0);
   if(!pats.has(c))pats.set(c,c.createPattern(noise,'repeat'));
-  c.save();c.globalAlpha=.07;c.globalCompositeOperation='overlay';c.translate(Math.random()*128,Math.random()*128);c.fillStyle=pats.get(c);c.fillRect(-128,-128,cw+256,ch+256);c.restore();
-  const v=c.createRadialGradient(cw/2,ch/2,cw*.3,cw/2,ch/2,cw*.75);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,.42)');c.fillStyle=v;c.fillRect(0,0,cw,ch);
+  const lk=CAM().look;
+  c.save();c.globalAlpha=lk==='fine'?.03:lk==='toy'?.11:.07;c.globalCompositeOperation='overlay';c.translate(Math.random()*128,Math.random()*128);c.fillStyle=pats.get(c);c.fillRect(-128,-128,cw+256,ch+256);c.restore();
+  const vr=Math.max(cw,ch),v=c.createRadialGradient(cw/2,ch/2,vr*(lk==='toy'?.18:.3),cw/2,ch/2,vr*(lk==='toy'?.62:.75));v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,`rgba(0,0,0,${lk==='toy'?.75:.42})`);c.fillStyle=v;c.fillRect(0,0,cw,ch);
+  if(lk==='toy'){const lx=cw*(.1+.06*Math.sin(el*.7)),lg=c.createRadialGradient(lx,ch*.2,0,lx,ch*.2,cw*.45);lg.addColorStop(0,'rgba(255,120,40,.45)');lg.addColorStop(.5,'rgba(255,60,40,.18)');lg.addColorStop(1,'rgba(255,60,40,0)');c.save();c.globalCompositeOperation='screen';c.fillStyle=lg;c.fillRect(0,0,cw,ch);c.restore()}
   if(showGrid){c.strokeStyle='rgba(255,255,255,.35)';c.lineWidth=Math.max(1,cw/600);c.beginPath();for(const k of[1/3,2/3]){c.moveTo(cw*k,0);c.lineTo(cw*k,ch);c.moveTo(0,ch*k);c.lineTo(cw,ch*k)}c.stroke();c.fillStyle='rgba(255,255,255,.55)';for(const a of[1/3,2/3])for(const b of[1/3,2/3]){c.beginPath();c.arc(cw*a,ch*b,cw/220,0,7);c.fill()}}
 }
 let accent='#F0B429';
@@ -501,7 +553,7 @@ function evaluate(){
   const t=el/DUR,cam=cams[locId],L=LOCS[locId],vis=[];
   for(const s of subjects(locId,t)){const fx=(s.x-cam.x)/camW,fy=(s.y-cam.y)/camH,mg=s.n==='逆さ富士'?0:.03;if(fx<mg||fx>1-mg||fy<mg||fy>1-mg)continue;
     let d=9;for(const a of[1/3,2/3])for(const b of[1/3,2/3])d=Math.min(d,Math.hypot(fx-a,(fy-b)*.9));
-    let c=clamp(1-d/.2);if(Math.hypot(fx-.5,fy-.5)<.08)c=Math.max(c,.35);vis.push({...s,c,sc:c*s.w})}
+    let c=clamp(1-d/.2);if(Math.hypot(fx-.5,fy-.5)<.08)c=Math.max(c,camId==='futatsu'?1:.35);vis.push({...s,c,sc:c*s.w})}
   vis.sort((a,b)=>b.sc-a.sc);const main=vis.find(v=>v.n!=='逆さ富士');
   const tags=new Set();vis.forEach(v=>v.tags.forEach(x=>tags.add(x)));
   const glob=Math.max(t<.3?.35:t>.85?.55:.42,gs(t,.47,.08),.92*gs(t,.74,.06));
@@ -509,18 +561,19 @@ function evaluate(){
   const light=Math.max(glob,subjL);
   const hy=(L.hz-cam.y)/camH;let hor;if(hy<0||hy>1)hor=.6;else if(Math.abs(hy-.5)<.06)hor=.1;else hor=clamp(1-Math.min(Math.abs(hy-1/3),Math.abs(hy-2/3))/.12);
   const mv=vis.filter(v=>v.m>0),mom=mv.length?Math.min(1,Math.max(...mv.map(v=>v.m*(.45+.55*v.c)))):0;
-  const n=vis.length,simp=[0,1,.95,.75,.5,.3][Math.min(n,5)];
-  const parts={comp:Math.min(1,main?main.sc:0)*30,light:light*25,hor:hor*15,mom:mom*20,simp:simp*10};
-  const base=Math.round(Object.values(parts).reduce((a,b)=>a+b,0));
+  const n=vis.length;let simp=[0,1,.95,.75,.5,.3][Math.min(n,5)];if(camId==='yokonaga'&&n)simp=Math.max(simp,.8);
+  const parts={comp:Math.min(1,main?main.sc:0)*30,light:light*25,hor:hor*15,mom:Math.min(20,mom*20*(camId==='hayate'?1.25:1)),simp:simp*10};
+  let base=Math.round(Object.values(parts).reduce((a,b)=>a+b,0));
+  let camBonus=0;if(camId==='ginrei')camBonus=5;if(camId==='pop'&&['人','猫','犬','子ども'].some(k=>tags.has(k)))camBonus=5;if(LENS().min===LENS().max)camBonus+=3;
   const sim=SIMS.find(x=>x.id===simId),filmOk=!!(sim.good&&sim.good(t,tags));
   const x={has:k=>tags.has(k),t};let yk=YAKU.filter(y=>y.f(x));const over=new Set(yk.flatMap(y=>y.over||[]));yk=yk.filter(y=>!over.has(y.id));
   const ypts=yk.reduce((a,y)=>a+y.p,0);
-  const score=base+(filmOk?6:0)+ypts;
+  const score=base+camBonus+(filmOk?6:0)+ypts;
   const tw=timeWord(t);let title;
   if(yk.length)title=yk[0].n;
   else if(main){const sec=vis.find(v=>v!==main&&v.n!==main.n&&v.n!=='逆さ富士'&&v.sc>.2);title=sec?`${main.n}と${sec.n}`:`${tw}の${main.n}`}
   else title=`${tw}の余白`;
-  return{score,base,parts,title,yaku:yk.map(y=>({id:y.id,n:y.n,p:y.p})),film:sim.n,filmOk,filmWhy:sim.why,hasMain:!!main,subjTiming:subjL,mainName:main?main.n:'',loc:L.name,clock:clockOf(t)};
+  return{score,base,parts,title,yaku:yk.map(y=>({id:y.id,n:y.n,p:y.p})),film:sim.n,filmOk,filmWhy:sim.why,hasMain:!!main,subjTiming:subjL,mainName:main?main.n:'',loc:L.name,clock:clockOf(t),cam:CAM().n,lens:LENS().short,camBonus};
 }
 const MAX={comp:30,light:25,hor:15,mom:20,simp:10};
 const GOOD={comp:'主役が三分割の交点にぴたりと座っている。',light:'光の選び方がいい。この時刻にしか撮れない色だ。',hor:'水平線の置き方に迷いがない。',mom:'動くものの一瞬を止めた。シャッターの勘が冴えている。',simp:'要素を絞った潔い画面。'};
@@ -535,20 +588,23 @@ function critique(r){
 
 // ---------- ui ----------
 let dpr=1;
-function resize(){dpr=Math.min(2,window.devicePixelRatio||1);const w=cv.clientWidth;if(!w)return;cv.width=w*dpr;cv.height=w*dpr*2/3;const mw=mini.clientWidth;mini.width=mw*dpr;mini.height=mw*dpr/3;accent=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||accent}
+function resize(){dpr=Math.min(2,window.devicePixelRatio||1);const a=CAM().aspect;cv.style.aspectRatio=String(a);const w=cv.clientWidth;if(!w)return;cv.width=w*dpr;cv.height=Math.round(w*dpr/a);const mw=mini.clientWidth;mini.width=mw*dpr;mini.height=mw*dpr/3;accent=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||accent}
 function clampCam(){const c=cams[locId];c.x=clamp(c.x,0,W-camW);c.y=clamp(c.y,0,H-camH)}
-function setLens(mm){const c=cams[locId],cx=c.x+camW/2,cy=c.y+camH/2;lensMM=mm;camW={24:1200,50:720,85:420}[mm];camH=camW*2/3;c.x=cx-camW/2;c.y=cy-camH/2;clampCam();$$('[data-mm]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.mm===mm))}
-$$('[data-mm]').forEach(b=>b.onclick=()=>setLens(+b.dataset.mm));
+function setFocal(mm){const a=CAM().aspect,L=LENS();mm=clamp(Math.round(mm),L.min,L.max);const c=cams[locId],cx=c.x+camW/2,cy=c.y+camH/2;fmm=mm;camW=Math.min(fw(mm),H*a*.98,W);camH=camW/a;c.x=cx-camW/2;c.y=cy-camH/2;clampCam();$('#focal').innerHTML=`${mm}<small>mm</small>`;$('#zoom').value=mm}
+function setLensId(id,keep){lensId=id;store.set('zansho-lens',id);const L=LENS();$('#lensName').textContent=L.short;const z=L.min!==L.max;$('#zoomRow').hidden=!z;$('#zoom').min=L.min;$('#zoom').max=L.max;$('#zMin').textContent=L.min;$('#zMax').textContent=L.max;setFocal(keep?fmm:(z?Math.max(L.min,Math.min(L.max,50)):L.min))}
+$('#lensBtn').onclick=()=>{const own=LENSES.filter(l=>owned().lenses.includes(l.id));if(own.length<2){toast('<b>レンズは1本だけ</b><br>カメラ店で買い足せる');return}const i=own.findIndex(l=>l.id===lensId);setLensId(own[(i+1)%own.length].id,true);toast(`<b>${LENS().n}</b> ${LENS().short}`,1200)};
+$('#zoom').addEventListener('input',e=>setFocal(+e.target.value));
 function setLoc(id){locId=id;$$('[data-loc]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.loc===id));clampCam();memoI=0;showMemo()}
 $$('[data-loc]').forEach(b=>b.onclick=()=>setLoc(b.dataset.loc));
-$('#films').innerHTML=SIMS.map(s=>`<button data-sim="${s.id}" aria-pressed="${s.id==='std'}"><i style="background:${s.sw}"></i>${s.n}</button>`).join('');
+function buildFilms(){const own=owned().films;$('#films').innerHTML=SIMS.filter(s=>!s.price||own.includes(s.id)).map(s=>`<button data-sim="${s.id}" aria-pressed="${s.id===simId}"><i style="background:${s.sw}"></i>${s.n}</button>`).join('');$$('[data-sim]').forEach(b=>b.onclick=()=>setSim(b.dataset.sim))}
 function setSim(id){simId=id;const s=SIMS.find(x=>x.id===id);cv.style.filter=cssOf(s);$('#simtag').textContent=s.n;$$('[data-sim]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.sim===id))}
-$$('[data-sim]').forEach(b=>b.onclick=()=>setSim(b.dataset.sim));
 $('#gridBtn').onclick=e=>{grid=!grid;e.currentTarget.setAttribute('aria-pressed',grid)};
-let drag=null;
-cv.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY};cv.setPointerCapture(e.pointerId)});
-cv.addEventListener('pointermove',e=>{if(!drag)return;const k=camW/cv.clientWidth,c=cams[locId];c.x-=(e.clientX-drag.x)*k;c.y-=(e.clientY-drag.y)*k;drag={x:e.clientX,y:e.clientY};clampCam()});
-['pointerup','pointercancel'].forEach(n=>cv.addEventListener(n,()=>drag=null));
+let drag=null;const pts=new Map();let pinch=null;
+cv.addEventListener('pointerdown',e=>{pts.set(e.pointerId,{x:e.clientX,y:e.clientY});cv.setPointerCapture(e.pointerId);if(pts.size===2){const [a,b]=[...pts.values()];pinch={d:Math.hypot(a.x-b.x,a.y-b.y),mm:fmm};drag=null}else drag={x:e.clientX,y:e.clientY}});
+cv.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pinch&&pts.size>=2){const [a,b]=[...pts.values()],d=Math.hypot(a.x-b.x,a.y-b.y);if(LENS().min!==LENS().max)setFocal(pinch.mm*d/pinch.d);return}
+  if(!drag)return;const k=camW/cv.clientWidth,c=cams[locId];c.x-=(e.clientX-drag.x)*k;c.y-=(e.clientY-drag.y)*k;drag={x:e.clientX,y:e.clientY};clampCam()});
+['pointerup','pointercancel'].forEach(n=>cv.addEventListener(n,e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=null;drag=null}));
 let md=false;
 function jump(e){const r=mini.getBoundingClientRect(),c=cams[locId];c.x=(e.clientX-r.left)/r.width*W-camW/2;c.y=(e.clientY-r.top)/r.height*H-camH/2;clampCam()}
 mini.addEventListener('pointerdown',e=>{md=true;mini.setPointerCapture(e.pointerId);jump(e)});
@@ -564,7 +620,6 @@ setInterval(()=>{memoI++;showMemo()},6500);
 
 let toastT;
 function toast(html,ms=2000){const t=$('#toast');t.innerHTML=html;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),ms)}
-const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 $('#shutter').onclick=()=>{
   if(!playing||shots.length>=SHOTS)return;
   const s=state();renderView(pctx,photo.width,photo.height,false,s);applySim(pctx,photo.width,photo.height,SIMS.find(x=>x.id===simId));
@@ -575,13 +630,33 @@ $('#shutter').onclick=()=>{
   $('#left').textContent=SHOTS-shots.length;
   if(shots.length>=SHOTS){playing=false;$('#shutter').disabled=true;setTimeout(finish,1600)}
 };
-function showRecord(){const b=store.get('zansho-best',0),y=store.get('zansho-yaku',[]).length;$('#record').textContent=(b?`最高平均点 ${b}点。`:'')+`見つけた役 ${y}/${YAKU.length}`}
-function start(){newGame();cams.lake={x:1340,y:120};cams.port={x:1140,y:330};cams.village={x:1300,y:300};setLoc('lake');setLens(50);playing=true;$('#shutter').disabled=false;$('#left').textContent=SHOTS;$$('.screen').forEach(s=>s.classList.remove('show'));requestAnimationFrame(resize)}
+function showRecord(){const b=store.get('zansho-best',0),y=store.get('zansho-yaku',[]).length;$('#record').textContent=(b?`最高平均点 ${b}点。`:'')+`見つけた役 ${y}/${YAKU.length}`;const c=CAM();$('#camline').innerHTML=`カメラ：${c.kind}「${esc(c.n)}」、${c.shots}枚撮り<br>レンズ：${owned().lenses.length}本（${esc(LENS().short)}を装着）<br>所持ポイント <span class="pt">${store.get('zansho-pt',0)}</span> pt`}
+function start(){SHOTS=CAM().shots;buildFilms();if(!SIMS.find(x=>x.id===simId&&(!x.price||owned().films.includes(x.id))))setSim('std');resize();newGame();cams.lake={x:1340,y:120};cams.port={x:1140,y:330};cams.village={x:1300,y:300};setLoc('lake');setLensId(lensId);photo.width=CAM().res||600;photo.height=Math.round(photo.width/CAM().aspect);playing=true;$('#shutter').disabled=false;$('#left').textContent=SHOTS;$$('.screen').forEach(s=>s.classList.remove('show'));requestAnimationFrame(resize)}
 $('#startBtn').onclick=start;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let zkBack='startScreen';
 function zukan(from){zkBack=from;const got=store.get('zansho-yaku',[]);$('#zk').innerHTML=`<h2>役図鑑　${got.length}/${YAKU.length}</h2><div class="zk">${YAKU.map(y=>got.includes(y.id)?`<div class="got"><em>+${y.p}</em><b>${esc(y.n)}</b><small>${esc(y.h)}</small></div>`:`<div><em>+${y.p}</em><b>？？？</b><small>${esc(y.h)}</small></div>`).join('')}</div><p class="center"><button class="primary" id="zkBack">戻る</button></p>`;$$('.screen').forEach(s=>s.classList.remove('show'));$('#zkScreen').classList.add('show');$('#zkScreen').scrollTop=0;$('#zkBack').onclick=()=>{$('#zkScreen').classList.remove('show');$('#'+zkBack).classList.add('show');showRecord()}}
-document.addEventListener('click',e=>{const b=e.target.closest('[data-zukan]');if(b)zukan(b.closest('.screen').id)});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-zukan]');if(b)zukan(b.closest('.screen').id);const sb=e.target.closest('[data-shop]');if(sb)shop(sb.closest('.screen').id)});
+let shopBack='startScreen';
+function shop(from){if(from)shopBack=from;const pt=store.get('zansho-pt',0),own=owned();
+  const camIc=c=>{const w=c.aspect>2?30:c.aspect===1?20:26,h=Math.round(w/c.aspect);return`<div class="ic"><i style="width:${w}px;height:${h}px"></i></div>`};
+  const camBtn=c=>c.id===camId?'<button class="using" disabled>使用中</button>':own.cams.includes(c.id)?`<button data-use="${c.id}">使う</button>`:`<button class="buy" data-buycam="${c.id}" ${pt<c.price?'disabled':''}>${c.price} pt</button>`;
+  const lensBtn=l=>own.lenses.includes(l.id)?(l.id===lensId?'<button class="using" disabled>装着中</button>':`<button data-uselens="${l.id}">付ける</button>`):`<button class="buy" data-buylens="${l.id}" ${pt<l.price?'disabled':''}>${l.price} pt</button>`;
+  const filmBtn=f=>own.films.includes(f.id)?'<button class="using" disabled>所持</button>':`<button class="buy" data-buyfilm="${f.id}" ${pt<f.price?'disabled':''}>${f.price} pt</button>`;
+  $('#shop').innerHTML=`<h2>カメラ店</h2><div class="wallet"><span>所持ポイント</span><b>${pt} pt</b></div>
+  <p class="breakdown" style="margin-top:12px">撮った写真の点数がそのままポイントになる。</p>
+  <h3>カメラ</h3>${CAMS.map(c=>`<div class="item">${camIc(c)}<div><b>${esc(c.n)}</b><small>${esc(c.kind)}。${esc(c.d)}</small></div>${camBtn(c)}</div>`).join('')}
+  <h3>レンズ</h3><p class="breakdown">買ったレンズは撮影中に「レンズ交換」で付け替えられる。ズームはスライダーかピンチで画角を変える。</p>${LENSES.map(l=>`<div class="item"><div class="ic"><i style="width:${l.min===l.max?18:26}px;height:18px;border-radius:50%"></i></div><div><b>${esc(l.n)} ${esc(l.short)}</b><small>${esc(l.d)}</small></div>${lensBtn(l)}</div>`).join('')}
+  <h3>フィルム</h3>${SIMS.filter(f=>f.price).map(f=>`<div class="item"><div class="ic"><span class="sw" style="background:${f.sw}"></span></div><div><b>${esc(f.n)}</b><small>${esc(f.d)}</small></div>${filmBtn(f)}</div>`).join('')}
+  <p class="center" style="margin-top:24px"><button class="primary" id="shopBack">戻る</button></p>`;
+  $$('.screen').forEach(s=>s.classList.remove('show'));$('#shopScreen').classList.add('show');
+  $$('[data-use]').forEach(b=>b.onclick=()=>{camId=b.dataset.use;store.set('zansho-cam',camId);shop()});
+  $$('[data-buycam]').forEach(b=>b.onclick=()=>{const c=CAMS.find(x=>x.id===b.dataset.buycam),p=store.get('zansho-pt',0);if(p<c.price)return;const o=owned();o.cams.push(c.id);store.set('zansho-own',o);store.set('zansho-pt',p-c.price);camId=c.id;store.set('zansho-cam',camId);shop()});
+  $$('[data-uselens]').forEach(b=>b.onclick=()=>{lensId=b.dataset.uselens;store.set('zansho-lens',lensId);shop()});
+  $$('[data-buylens]').forEach(b=>b.onclick=()=>{const l=LENSES.find(x=>x.id===b.dataset.buylens),p=store.get('zansho-pt',0);if(p<l.price)return;const o=owned();o.lenses.push(l.id);store.set('zansho-own',o);store.set('zansho-pt',p-l.price);lensId=l.id;store.set('zansho-lens',lensId);shop()});
+  $$('[data-buyfilm]').forEach(b=>b.onclick=()=>{const f=SIMS.find(x=>x.id===b.dataset.buyfilm),p=store.get('zansho-pt',0);if(p<f.price)return;const o=owned();o.films.push(f.id);store.set('zansho-own',o);store.set('zansho-pt',p-f.price);shop()});
+  $('#shopBack').onclick=()=>{$('#shopScreen').classList.remove('show');$('#'+shopBack).classList.add('show');showRecord()};
+}
 function finish(){
   playing=false;const res=$('#res');
   if(!shots.length){res.innerHTML=`<h2>現像</h2><p class="critique">日が暮れた。一枚も撮らなかった。光は待ってくれない。</p><button class="primary" id="again">もう一度撮る</button>`}
@@ -589,16 +664,18 @@ function finish(){
     const best=shots.reduce((a,b)=>b.score>a.score?b:a),avg=Math.round(shots.reduce((a,b)=>a+b.score,0)/shots.length);
     const rank=avg>=105?'巨匠':avg>=85?'写真家':avg>=68?'有望な新人':avg>=50?'散歩カメラマン':'シャッター初心者';
     const prev=store.get('zansho-best',0);if(avg>prev)store.set('zansho-best',avg);
+    const earned=shots.reduce((a,b)=>a+b.score,0),wallet=store.get('zansho-pt',0)+earned;store.set('zansho-pt',wallet);
     const allY=[...new Set(shots.flatMap(s=>s.yaku.map(y=>y.n)))],fresh=shots.flatMap(s=>s.fresh);const p=best.parts;
     res.innerHTML=`<h2>現像</h2>
-    <div class="print"><img src="${best.img}" alt="${esc(best.title)}"><div class="cap"><strong>「${esc(best.title)}」</strong><span>${best.score}</span></div><div class="sub">${esc(best.loc)}、${best.clock}、${esc(best.film)}</div></div>
+    <div class="print"><img src="${best.img}" alt="${esc(best.title)}"><div class="cap"><strong>「${esc(best.title)}」</strong><span>${best.score}</span></div><div class="sub">${esc(best.loc)}、${best.clock}、${esc(best.cam)}、${esc(best.lens)}、${esc(best.film)}</div></div>
     <p class="critique">${esc(critique(best))}</p>
-    <p class="breakdown">構図 ${Math.round(p.comp)}/30、光 ${Math.round(p.light)}/25、水平線 ${Math.round(p.hor)}/15、瞬間 ${Math.round(p.mom)}/20、簡潔さ ${Math.round(p.simp)}/10${best.filmOk?'、フィルム +6':''}${best.yaku.length?`、役 +${best.yaku.reduce((a,y)=>a+y.p,0)}`:''}</p>
+    <p class="breakdown">構図 ${Math.round(p.comp)}/30、光 ${Math.round(p.light)}/25、水平線 ${Math.round(p.hor)}/15、瞬間 ${Math.round(p.mom)}/20、簡潔さ ${Math.round(p.simp)}/10${best.camBonus?`、機材 +${best.camBonus}`:''}${best.filmOk?'、フィルム +6':''}${best.yaku.length?`、役 +${best.yaku.reduce((a,y)=>a+y.p,0)}`:''}</p>
     ${allY.length?`<div class="yakus">${allY.map(n=>`<span>${esc(n)}</span>`).join('')}</div>`:''}
-    <div class="stats"><div>称号<b>${rank}</b></div><div>平均点<b>${avg}</b></div><div>そろえた役<b>${allY.length}</b></div></div>
+    <div class="stats"><div>称号<b>${rank}</b></div><div>平均点<b>${avg}</b></div><div>そろえた役<b>${allY.length}</b></div><div>獲得<b>+${earned} pt</b></div></div>
+    <p class="breakdown">所持ポイントは ${wallet} pt。カメラ店で新しいカメラやフィルムと交換できる。</p>
     ${fresh.length?`<p class="breakdown">新しい役を${fresh.length}つ図鑑に登録した。</p>`:''}${avg>prev&&prev?'<p class="breakdown">自己ベストを更新した。</p>':''}
-    <div class="sheet">${shots.map(s=>`<figure><img src="${s.img}" alt="${esc(s.title)}"><figcaption><div><span class="t${s.yaku.length?' y':''}">${esc(s.title)}</span><span>${s.score}</span></div><small>${esc(s.loc)}、${s.clock}、${esc(s.film)}</small></figcaption></figure>`).join('')}</div>
-    <p class="center" style="margin-top:24px"><button class="primary" id="again">もう一度撮る</button><br><button class="ghost" data-zukan>役図鑑を見る</button></p>`;
+    <div class="sheet">${shots.map(s=>`<figure><img src="${s.img}" alt="${esc(s.title)}"><figcaption><div><span class="t${s.yaku.length?' y':''}">${esc(s.title)}</span><span>${s.score}</span></div><small>${esc(s.loc)}、${s.clock}、${esc(s.cam)}、${esc(s.lens)}、${esc(s.film)}</small></figcaption></figure>`).join('')}</div>
+    <p class="center" style="margin-top:24px"><button class="primary" id="again">もう一度撮る</button><br><button class="ghost" data-shop>カメラ店へ</button> <button class="ghost" data-zukan>役図鑑</button></p>`;
   }
   $$('.screen').forEach(s=>s.classList.remove('show'));$('#resScreen').classList.add('show');$('#resScreen').scrollTop=0;$('#again').onclick=start;
 }
@@ -611,8 +688,8 @@ function loop(now){
   requestAnimationFrame(loop);
 }
 window.addEventListener('resize',resize);
-window.__z={set:v=>{el=v},loc:setLoc,lens:setLens,cam:(x,y)=>{cams[locId].x=x;cams[locId].y=y;clampCam()},ev:()=>ev,shoot:()=>$('#shutter').click()};
-newGame();resize();showRecord();showMemo();requestAnimationFrame(loop);
+window.__z={set:v=>{el=v},loc:setLoc,lens:setFocal,cam:(x,y)=>{cams[locId].x=x;cams[locId].y=y;clampCam()},ev:()=>ev,shoot:()=>$('#shutter').click()};
+buildFilms();newGame();resize();setLensId(lensId);showRecord();showMemo();requestAnimationFrame(loop);
 })();
 </script>
 </body>
